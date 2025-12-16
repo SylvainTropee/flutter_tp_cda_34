@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:manahattan_cda_34/models/project.dart';
+import 'package:manahattan_cda_34/pages/contribution-page.dart';
+import 'package:manahattan_cda_34/pages/projects-page.dart';
 
 void main() {
   runApp(const ProjectManhattanApp());
@@ -27,13 +29,23 @@ class ProjectManhattanApp extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+
+  HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
+  int _selectedIndex = 0;
+
   final List<Project> _projects = [
     Project(title: "Projet Manhattan", desc: "Un projet vraiment énorme"),
     Project(title: "Projet important", desc: "Un projet très important"),
+    Project(title: "Projet impofdfsdfrtant", desc: "Un projet très imfgfgportant"),
   ];
-
-  HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +56,12 @@ class HomeScreen extends StatelessWidget {
         leading: Icon(Icons.rocket_launch),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0,
+        currentIndex: _selectedIndex,
+        onTap: (int index){
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.grey,
         items: [
@@ -58,21 +75,7 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: ListView.builder(
-        padding: EdgeInsets.all(16),
-        itemCount: _projects.length,
-        itemBuilder: (context, index) {
-          return Card(
-            margin: EdgeInsets.symmetric(vertical: 8),
-            child: ListTile(
-              leading: Icon(Icons.work_outline_outlined, color: Colors.indigo),
-              title: Text(_projects[index].title),
-              subtitle: Text(_projects[index].desc),
-              trailing: Icon(Icons.arrow_forward_ios),
-            ),
-          );
-        },
-      ),
+      body: _selectedIndex == 0 ? ProjectsPage(projects: _projects) : ContributionPage(),
     );
   }
 }
