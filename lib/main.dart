@@ -30,7 +30,6 @@ class ProjectManhattanApp extends StatelessWidget {
 }
 
 class HomeScreen extends StatefulWidget {
-
   HomeScreen({super.key});
 
   @override
@@ -38,14 +37,31 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   int _selectedIndex = 0;
 
   final List<Project> _projects = [
     Project(title: "Projet Manhattan", desc: "Un projet vraiment énorme"),
     Project(title: "Projet important", desc: "Un projet très important"),
-    Project(title: "Projet impofdfsdfrtant", desc: "Un projet très imfgfgportant"),
+    Project(
+      title: "Projet impofdfsdfrtant",
+      desc: "Un projet très imfgfgportant",
+    ),
   ];
+
+  void _addProject() {
+    setState(() {
+      int num = _projects.length + 1;
+      _projects.add(
+        Project(title: "Nouveau projet $num", desc: "Nouveau projet"),
+      );
+    });
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,11 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
-        onTap: (int index){
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
+        onTap: _onItemTapped,
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.grey,
         items: [
@@ -75,7 +87,25 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: _selectedIndex == 0 ? ProjectsPage(projects: _projects) : ContributionPage(),
+      floatingActionButton: ProjectFAB(addProjectCallback: _addProject),
+      body: _selectedIndex == 0
+          ? ProjectsPage(projects: _projects)
+          : ContributionPage(),
+    );
+  }
+}
+
+class ProjectFAB extends StatelessWidget {
+  void Function() _addProjectCallback;
+
+  ProjectFAB({required addProjectCallback})
+    : _addProjectCallback = addProjectCallback;
+
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton(
+      child: Icon(Icons.add, size: 40),
+      onPressed: _addProjectCallback,
     );
   }
 }
