@@ -48,6 +48,17 @@ class _HomeScreenState extends State<HomeScreen> {
     ),
   ];
 
+  void onSubmitForm(Project project) {
+    setState(() {
+      _projects.add(project);
+      _selectedIndex = 0;
+    });
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text("Projet ${project.title} ajouté !")));
+  }
+
   void _addProject() {
     setState(() {
       int num = _projects.length + 1;
@@ -90,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: ProjectFAB(addProjectCallback: _addProject),
       body: _selectedIndex == 0
           ? ProjectsPage(projects: _projects)
-          : ContributionPage(),
+          : ContributionPage(onSubmitForm: onSubmitForm),
     );
   }
 }

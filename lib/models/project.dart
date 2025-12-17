@@ -1,10 +1,20 @@
+enum ProjectStatus { inProgess, done, upComing }
+
 class Project {
   String _title;
   String _desc;
+  ProjectStatus _status;
+  DateTime? _date;
 
-  Project({required String title, required String desc})
-    : _title = title,
-      _desc = desc;
+  Project({
+    required String title,
+    required String desc,
+    ProjectStatus status = ProjectStatus.upComing,
+    DateTime? date,
+  }) : _title = title,
+       _desc = desc,
+       _status = status,
+       _date = date;
 
   String get desc => _desc;
 
@@ -16,5 +26,22 @@ class Project {
 
   set title(String value) {
     _title = value;
+  }
+
+  DateTime? get date => _date;
+
+  set date(DateTime? value) {
+    _date = value;
+  }
+
+  ProjectStatus get status => _status;
+
+  set status(ProjectStatus value) {
+    _status = value;
+  }
+
+  @override
+  String toString() {
+    return 'Project{_title: $_title, _desc: $_desc, _status: $_status, _date: $_date}';
   }
 }
