@@ -78,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Mes projets"),
+        title: Text(_selectedIndex == 0 ? "Mes projets" : "Contribuer"),
         centerTitle: true,
         leading: Icon(Icons.rocket_launch),
       ),
