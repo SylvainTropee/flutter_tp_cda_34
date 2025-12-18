@@ -1,32 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:manahattan_cda_34/models/project.dart';
 
-class ContributionPage extends StatefulWidget {
+class ContributionForm extends StatefulWidget {
   final Function(Project) onSubmitForm;
+  final Project? project;
 
-  const ContributionPage({required this.onSubmitForm});
+  const ContributionForm({required this.onSubmitForm, this.project});
 
   @override
-  State<ContributionPage> createState() => _ContributionPageState();
+  State<ContributionForm> createState() => _ContributionFormState();
 }
 
-class _ContributionPageState extends State<ContributionPage> {
+class _ContributionFormState extends State<ContributionForm> {
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   DateTime? _pickedDate;
   String? title, desc;
   ProjectStatus? status;
   TextEditingController _dateController = TextEditingController();
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (widget.project?.date != null) {
+      _dateController.text =
+          "${widget.project?.date?.day}/${widget.project?.date?.month}/${widget.project?.date?.year}";
+    }
+  }
+
   void _submitForm() {
     if (_formkey.currentState!.validate()) {
       //TODO création d'un projet et ajout dans la liste
       _formkey.currentState!.save();
-      var project = Project(
-        title: title ?? "",
-        desc: desc ?? "",
-        status: status ?? ProjectStatus.upComing,
-        date: _pickedDate,
-      );
+
+      var project = widget.project;
+
+      if (project == null) {
+        project = Project(
+          title: title ?? "",
+          desc: desc ?? "",
+          status: status ?? ProjectStatus.upComing,
+          date: _pickedDate,
+        );
+      } else {
+        project.title = title ?? "";
+        project.desc = desc ?? "";
+        project.status = status ?? ProjectStatus.upComing;
+        project.date = _pickedDate;
+      }
       widget.onSubmitForm(project);
     }
   }
@@ -54,6 +75,7 @@ class _ContributionPageState extends State<ContributionPage> {
         child: Column(
           children: [
             TextFormField(
+              initialValue: widget.project?.title,
               onSaved: (value) {
                 title = value;
               },
@@ -70,6 +92,7 @@ class _ContributionPageState extends State<ContributionPage> {
             ),
             SizedBox(height: 16),
             TextFormField(
+              initialValue: widget.project?.desc,
               onSaved: (value) {
                 desc = value;
               },
@@ -88,6 +111,7 @@ class _ContributionPageState extends State<ContributionPage> {
             ),
             SizedBox(height: 16),
             DropdownButtonFormField<ProjectStatus>(
+              initialValue: widget.project?.status,
               onSaved: (value) {
                 status = value;
               },

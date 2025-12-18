@@ -1,20 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:manahattan_cda_34/models/project.dart';
-import 'package:manahattan_cda_34/pages/contribution-page.dart';
-import 'package:manahattan_cda_34/pages/projects-page.dart';
+import 'package:manahattan_cda_34/common/contribution-form.dart';
+import 'package:manahattan_cda_34/pages/home-page.dart';
+import 'package:manahattan_cda_34/pages/project-detail-page.dart';
+import 'package:manahattan_cda_34/pages/project-edit-page.dart';
 
 void main() {
   runApp(const ProjectManhattanApp());
 }
+
+final GoRouter _router = GoRouter(
+  routes: [
+    GoRoute(path: "/", builder: (context, state) => HomeScreen()),
+    GoRoute(
+      path: "/detail",
+      builder: (context, state) {
+        Project project = state.extra as Project;
+        return ProjectDetailPage(project: project);
+      },
+    ),
+    GoRoute(
+      path: "/edit",
+      builder: (context, state) {
+        Project project = state.extra as Project;
+        return ProjectEditPage(project: project);
+      },
+    ),
+  ],
+);
 
 class ProjectManhattanApp extends StatelessWidget {
   const ProjectManhattanApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
+      routerConfig: _router,
       title: "Gestion de projets",
-      home: HomeScreen(),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,
@@ -25,98 +48,6 @@ class ProjectManhattanApp extends StatelessWidget {
           foregroundColor: Colors.white,
         ),
       ),
-    );
-  }
-}
-
-class HomeScreen extends StatefulWidget {
-  HomeScreen({super.key});
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0;
-
-  final List<Project> _projects = [
-    Project(title: "Projet Manhattan", desc: "Un projet vraiment énorme"),
-    Project(title: "Projet important", desc: "Un projet très important"),
-    Project(
-      title: "Projet impofdfsdfrtant",
-      desc: "Un projet très imfgfgportant",
-    ),
-  ];
-
-  void onSubmitForm(Project project) {
-    setState(() {
-      _projects.add(project);
-      _selectedIndex = 0;
-    });
-
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text("Projet ${project.title} ajouté !")));
-  }
-
-  void _addProject() {
-    setState(() {
-      int num = _projects.length + 1;
-      _projects.add(
-        Project(title: "Nouveau projet $num", desc: "Nouveau projet"),
-      );
-    });
-  }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_selectedIndex == 0 ? "Mes projets" : "Contribuer"),
-        centerTitle: true,
-        leading: Icon(Icons.rocket_launch),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.grey,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.folder_outlined),
-            label: "Projets",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add_circle_outline),
-            label: "Contribuer",
-          ),
-        ],
-      ),
-      floatingActionButton: ProjectFAB(addProjectCallback: _addProject),
-      body: _selectedIndex == 0
-          ? ProjectsPage(projects: _projects)
-          : ContributionPage(onSubmitForm: onSubmitForm),
-    );
-  }
-}
-
-class ProjectFAB extends StatelessWidget {
-  void Function() _addProjectCallback;
-
-  ProjectFAB({required addProjectCallback})
-    : _addProjectCallback = addProjectCallback;
-
-  @override
-  Widget build(BuildContext context) {
-    return FloatingActionButton(
-      child: Icon(Icons.add, size: 40),
-      onPressed: _addProjectCallback,
     );
   }
 }
