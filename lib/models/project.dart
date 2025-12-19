@@ -1,3 +1,7 @@
+import 'package:manahattan_cda_34/models/task.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 enum ProjectStatus { inProgess, done, upComing }
 
 class Project {
@@ -5,6 +9,7 @@ class Project {
   String _desc;
   ProjectStatus _status;
   DateTime? _date;
+  List<Task> tasks = [];
 
   Project({
     required String title,
@@ -38,6 +43,17 @@ class Project {
 
   set status(ProjectStatus value) {
     _status = value;
+  }
+
+  Future<void> initTasks() async {
+    var response = await http.get(
+      Uri.parse("https://jsonplaceholder.typicode.com/users/1/todos"),
+    );
+
+    if (response.statusCode == 200) {
+      tasks = List.from(
+          jsonDecode(response.body).map((t) => Task.fromJson(t)));
+    }
   }
 
   @override
